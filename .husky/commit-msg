@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+commit_msg=$(cat "$1")
+# Check if commit message is empty
+if [ -z "$commit_msg" ]; then
+  echo ":x: Error: Commit message cannot be empty"
+  exit 1
+fi
+# Check minimum length (at least 10 characters)
+if [ ${#commit_msg} -lt 10 ]; then
+  echo ":x: Error: Commit message must be at least 10 characters long"
+  exit 1
+fi
+# Check for conventional commit format - STRICT (will fail if not followed)
+if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+"; then
+  echo ":x: Error: Commit message must follow conventional commit format"
+  echo "   Format: type(scope): subject"
+  echo "   Examples: feat: add new feature"
+  echo "            fix: resolve bug"
+  echo "            docs: update readme"
+  echo "   Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+  exit 1
+fi
+echo ":white_check_mark: Commit message is valid"
